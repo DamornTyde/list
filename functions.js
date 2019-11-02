@@ -12,31 +12,29 @@ if(storageAvailable('localStorage')){
 } else {
     saveSystem = false;
 }
-main.appendChild(createEditor(0));
+renderEditor(main, 0);
 
 //
-function createButton(text, onClicked, context) {
+function createButton(text, onClicked) {
     const button = document.createElement("button");
     button.appendChild(document.createTextNode(text));
     button.addEventListener("click", onClicked);
     return button;
 }
 
-function createEditor(open){
-    document.getElementsByTagName("main")[0].innerHTML = "";
-    const editor = document.createElement("div");
+function renderEditor(root, open){
+    root.innerHTML = "";
     if(open == 0){
-        editor.appendChild(createHeader(listName));
+        root.appendChild(createHeader(listName));
     } else {
-        var temp = list.find(x => x.id == open);
-        editor.appendChild(createHeader(temp.text));
-        editor.appendChild(createUndertitle(temp.parent))
+        const temp = list.find(x => x.id == open);
+        root.appendChild(createHeader(temp.text));
+        root.appendChild(createUndertitle(temp.parent))
     }
-    editor.appendChild(createTextarea());
-    editor.appendChild(document.createElement("br"));
-    editor.appendChild(createButton("add", () => addContent(open)));
-    editor.appendChild(createContent(open));
-    return editor;
+    root.appendChild(createTextarea());
+    root.appendChild(document.createElement("br"));
+    root.appendChild(createButton("add", () => addContent(open)));
+    root.appendChild(createContent(open));
 }
 
 function createHeader(text){
@@ -127,7 +125,7 @@ function addContent(open){
     const text = document.getElementById("text").value;
     if(text.length > 0){
         addItems([{id:itemNumber(1), parent:open, text:text}]);
-        main.appendChild(createEditor(open));
+        renderEditor(main, open);
         document.getElementById("text").value = "";
     } else {
         alert("Please write something to add in the item");
@@ -135,5 +133,5 @@ function addContent(open){
 }
 
 function openItem(id){
-    main.appendChild(createEditor(id));
+    renderEditor(main, id);
 }

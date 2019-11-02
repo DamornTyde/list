@@ -1,7 +1,10 @@
 var list = [],
     saveSystem,
-    listName = "New List",
-    open = 0;
+    listName = "New List";
+
+//
+const header = document.querySelector("header");
+const main = document.querySelector("main");
 
 //
 if(storageAvailable('localStorage')){
@@ -9,45 +12,76 @@ if(storageAvailable('localStorage')){
 } else {
     saveSystem = false;
 }
-if(saveSystem){
-    document.getElementsByTagName("header")[0].innerHTML = "<button id='switch'>Example</button>" +
-        "<button id='saveList'>Save</button>" +
-        "<button id='loadList'>Load</button>" +
-        "<button id='deleteList'>Delete a save</button>" +
-        "<button id='newList'>New list</button>" +
-        "<button id='deleteStorage'>Clear saves</button>";
-} else {
-    document.getElementsByTagName("header")[0].innerHTML = "<button id='switch'>Example</button>";
-}
-editer();
+main.appendChild(createEditor(0));
 
 //
-document.getElementById("add").addEventListener("click", function(){
-    var text = document.getElementById("text").value,
-        id = itemNumber(1);
-    if(text.length > 0){
-        addItems([{id:id, parent:open, text:text}]);
+function createButton(text, onClicked, context) {
+    const button = document.createElement("button");
+    button.appendChild(document.createTextNode(text));
+    button.addEventListener("click", onClicked);
+    return button;
+}
+
+function createEditor(open){
+    document.getElementsByTagName("main")[0].innerHTML = "";
+    const editor = document.createElement("div");
+    if(open == 0){
+        editor.appendChild(createHeader(listName));
     } else {
-        alert("Please fill in some text so we can add your item");
+        var temp = list.find(x => x.id == open);
+        editor.appendChild(createHeader(temp.text));
+        editor.appendChild(createUndertitle(temp.parent))
     }
-    fill();
-    document.getElementById("text").value = "";
-});
+    editor.appendChild(createTextarea());
+    editor.appendChild(document.createElement("br"));
+    editor.appendChild(createButton("add", () => addContent(open)));
+    editor.appendChild(createContent(open));
+    return editor;
+}
 
-document.getElementById("back").addEventListener("click", function(){
-    var temp = list.find(x => x.id == open);
-    console.log(temp);
-    open = temp.parent;
-    editer();
-});
+function createHeader(text){
+    const header = document.createElement("h1");
+    header.appendChild(document.createTextNode(text));
+    return header;
+}
 
-document.getElementById("content").addEventListener("click", function(button){
-    if(button.target.classList.contains("context")){
-        var id = button.target.dataset.id;
-        open = id;
-        editer();
-    }
-});
+function createTextarea(){
+    const textarea = document.createElement("textarea");
+    textarea.setAttribute("id", "text");
+    return textarea;
+}
+
+function createContent(open){
+    const content = document.createElement("div");
+    content.setAttribute("id", "content");
+    const temp = list.filter(x => x.parent == open);
+    temp.forEach(function(item){
+        content.appendChild(createItem(item));
+    });
+    return content;
+}
+
+function createItem(i){
+    const item = document.createElement("div");
+    item.setAttribute("class", "item");
+    item.appendChild(createDivButton(i.text, () => openItem(i.id), "context"));
+    return item;
+}
+
+function createDivButton(text, onClicked, context){
+    const button = document.createElement("div");
+    button.setAttribute("class", context);
+    button.appendChild(document.createTextNode(text));
+    button.addEventListener("click", onClicked);
+    return button;
+}
+
+function createUndertitle(parent){
+    const title = document.createElement("div");
+    title.setAttribute("id", "back");
+    title.appendChild(createButton("back", () => openItem(parent)));
+    return title;
+}
 
 //
 function storageAvailable(type) {
@@ -89,33 +123,17 @@ function addItems(temp){
     }
 }
 
-//
-function editer(){
-    var content = ""
-    if(open == 0){
-        content += "<h1>" + listName + "</h1>";
+function addContent(open){
+    const text = document.getElementById("text").value;
+    if(text.length > 0){
+        addItems([{id:itemNumber(1), parent:open, text:text}]);
+        main.appendChild(createEditor(open));
+        document.getElementById("text").value = "";
     } else {
-        var temp = list.find(x => x.id == open)
-        content += "<h1>" + temp.text + "</h1>";
+        alert("Please write something to add in the item");
     }
-    content += "<div id='header'><button id='back'>Back</button></div>" +
-        "<div><textarea id='text'></textarea><br>";
-    if(saveSystem){
-        content += "<button id='add'>Add</button>" +
-            "<button id='importList'>Import</button></div>";
-    } else {
-        content += "<button id='add''>Add</button></div>";
-    }
-    content += "<div id='content'></div>";
-    document.getElementsByTagName("main")[0].innerHTML = content;
-    fill();
 }
 
-function fill(){
-    var temp = list.filter(x => x.parent == open),
-        content = "";
-    temp.forEach(function(item){
-        content += "<div class='item'><div class='context' data-id='" + item.id + "'>" + item.text + "</div></div>";
-    });
-    document.getElementById("content").innerHTML = content;
+function openItem(id){
+    main.appendChild(createEditor(id));
 }

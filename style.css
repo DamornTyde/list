@@ -33,8 +33,7 @@ main{
 }
 
 #text,
-div,
-p{
+div{
     width: 90%;
 }
 
@@ -58,4 +57,9 @@ div{
 .context,
 button{
     cursor: pointer;
+}
+
+#back{
+    text-align: left;
+    margin-top: -20px;
 }

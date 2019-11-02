@@ -57,7 +57,7 @@ function createContent(open){
 function createItem(i){
     const item = document.createElement("div");
     item.setAttribute("class", "item");
-    item.appendChild(createDivButton(i.text, () => openItem(i.id), "context"));
+    item.appendChild(createDivButton(i.text, () => renderEditor(main, i.id), "context"));
     return item;
 }
 
@@ -72,7 +72,7 @@ function createDivButton(text, onClicked, context){
 function createUndertitle(parent){
     const title = document.createElement("div");
     title.setAttribute("id", "back");
-    title.appendChild(createButton("back", () => openItem(parent)));
+    title.appendChild(createButton("back", () => renderEditor(main, parent)));
     return title;
 }
 
@@ -120,8 +120,4 @@ function addContent(open){
     } else {
         alert("Please write something to add in the item");
     }
-}
-
-function openItem(id){
-    renderEditor(main, id);
 }

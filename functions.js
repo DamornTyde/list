@@ -1,17 +1,12 @@
 var list = [],
-    saveSystem,
     listName = "New List";
 
 //
 const header = document.querySelector("header");
 const main = document.querySelector("main");
+const saveSystem = storageAvailable('localStorage');
 
 //
-if(storageAvailable('localStorage')){
-    saveSystem = true;
-} else {
-    saveSystem = false;
-}
 renderEditor(main, 0);
 
 //

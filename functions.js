@@ -26,7 +26,7 @@ function renderEditor(root, open){
         root.appendChild(createHeader(temp.text));
         root.appendChild(createUndertitle(temp.parent))
     }
-    root.appendChild(createTextarea());
+    root.appendChild(createTextarea("text"));
     root.appendChild(document.createElement("br"));
     root.appendChild(createButton("add", () => addContent(open)));
     root.appendChild(createContent(open));
@@ -38,9 +38,9 @@ function createHeader(text){
     return head;
 }
 
-function createTextarea(){
+function createTextarea(context){
     const textarea = document.createElement("textarea");
-    textarea.setAttribute("id", "text");
+    textarea.setAttribute("id", context);
     return textarea;
 }
 

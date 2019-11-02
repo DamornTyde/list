@@ -1,0 +1,61 @@
+*{
+    margin: 0;
+}
+
+body{
+    text-align: center;
+}
+
+header,
+footer{
+    position: fixed;
+    width: 100%;
+    background-color: white;
+}
+
+header{
+    top: 0px;
+    background-color: black;
+    padding: 5px;
+}
+
+footer{
+    bottom: 0px;
+}
+
+h6{
+    margin: 0px;
+}
+
+main{
+    margin-top: 35px;
+    margin-bottom: 15px;
+}
+
+#text,
+div,
+p{
+    width: 90%;
+}
+
+#content{
+    border-top: black solid 1px;
+}
+
+div{
+    margin: auto;
+    margin-top: 10px;
+}
+
+.item{
+    text-align: left;
+}
+
+.item:nth-child(n+2){
+    border-top: gray solid 1px;
+}
+
+.context,
+button{
+    cursor: pointer;
+}

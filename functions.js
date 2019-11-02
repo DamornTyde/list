@@ -99,7 +99,7 @@ function itemNumber(i){
 }
 
 function addItems(temp){
-    const addSpace = list.findIndex(x => x.parent > temp[0].parent);
+    const addSpace = list.findIndex(x => x.parent > temp.parent);
     if(addSpace == -1){
         temp.forEach(function(item){
             list.push(item);

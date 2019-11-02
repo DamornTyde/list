@@ -38,9 +38,9 @@ function renderEditor(root, open){
 }
 
 function createHeader(text){
-    const header = document.createElement("h1");
-    header.appendChild(document.createTextNode(text));
-    return header;
+    const head = document.createElement("h1");
+    head.appendChild(document.createTextNode(text));
+    return head;
 }
 
 function createTextarea(){

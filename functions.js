@@ -1,5 +1,6 @@
 var list = [],
-    listName = "New List";
+    listName = "New List",
+    example = false;
 
 //
 const header = document.querySelector("header");
@@ -7,6 +8,7 @@ const main = document.querySelector("main");
 const saveSystem = storageAvailable('localStorage');
 
 //
+header.appendChild(createButton("Example/Editer",() => otherPage(0)));
 renderEditor(main, 0);
 
 //
@@ -76,6 +78,32 @@ function createUndertitle(parent){
     return title;
 }
 
+function renderExample(root, open){
+    const temp = list.filter(x => x.parent == open);
+    root.innerHTML = "";
+    if(temp.length > 0){
+        root.appendChild(createList(temp));
+    }
+}
+
+function createList(temp){
+    const ol = document.createElement("ol");
+    temp.forEach(function(item){
+        ol.appendChild(createListItem(item));
+    });
+    return ol;
+}
+
+function createListItem(item){
+    const li = document.createElement("li");
+    li.appendChild(document.createTextNode(item.text));
+    const temp = list.filter(x => x.parent == item.id);
+    if(temp.length > 0){
+        li.appendChild(createList(temp));
+    }
+    return li;
+}
+
 //
 function storageAvailable(type) {
     try {
@@ -120,4 +148,13 @@ function addContent(open){
     } else {
         alert("Please write something to add in the item");
     }
+}
+
+function otherPage(open){
+    if(example){
+        renderEditor(main, open);
+    } else {
+        renderExample(main, open);
+    }
+    example = !example;
 }

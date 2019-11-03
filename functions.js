@@ -79,11 +79,18 @@ function createUndertitle(parent){
 }
 
 function renderExample(root, open){
-    const temp = list.filter(x => x.parent == open);
     root.innerHTML = "";
+    root.appendChild(getList(open));
+}
+
+function getList(open){
+    const div = document.createElement("div");
+    div.setAttribute("id", "list");
+    const temp = list.filter(x => x.parent == open);
     if(temp.length > 0){
-        root.appendChild(createList(temp));
+        div.appendChild(createList(temp));
     }
+    return div;
 }
 
 function createList(temp){
@@ -96,7 +103,7 @@ function createList(temp){
 
 function createListItem(item){
     const li = document.createElement("li");
-    li.appendChild(document.createTextNode(item.text));
+    li.appendChild(createButton(item.text, () => otherPage(item.id)));
     const temp = list.filter(x => x.parent == item.id);
     if(temp.length > 0){
         li.appendChild(createList(temp));

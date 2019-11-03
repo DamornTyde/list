@@ -1,5 +1,6 @@
 *{
     margin: 0;
+    font-family: "Times New Roman", Times, serif;
 }
 
 body{
@@ -62,4 +63,16 @@ button{
 #back{
     text-align: left;
     margin-top: -20px;
+}
+
+#list{
+    text-align: left;
+    margin-top: 60px;
+}
+
+li > button,
+li > button:hover{
+    border: none;
+    background: none;
+    font-size: 16px;
 }

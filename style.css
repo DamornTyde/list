@@ -1,6 +1,5 @@
 *{
     margin: 0;
-    font-family: "Times New Roman", Times, serif;
 }
 
 body{
@@ -34,7 +33,8 @@ main{
 }
 
 #text,
-div{
+div,
+h1{
     width: 90%;
 }
 
@@ -42,7 +42,8 @@ div{
     border-top: black solid 1px;
 }
 
-div{
+div,
+h1{
     margin: auto;
     margin-top: 10px;
 }
@@ -70,9 +71,11 @@ button{
     margin-top: 60px;
 }
 
-li > button,
-li > button:hover{
-    border: none;
-    background: none;
-    font-size: 16px;
+li > div{
+    width: 100%;
+    cursor: pointer;
+}
+
+ol{
+    margin-bottom: 20px;
 }

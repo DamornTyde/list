@@ -103,7 +103,7 @@ function createList(temp){
 
 function createListItem(item){
     const li = document.createElement("li");
-    li.appendChild(createButton(item.text, () => otherPage(item.id)));
+    li.appendChild(createDivButton(item.text, () => otherPage(item.id), "item"));
     const temp = list.filter(x => x.parent == item.id);
     if(temp.length > 0){
         li.appendChild(createList(temp));

@@ -50,6 +50,7 @@ h1{
 
 .item{
     text-align: left;
+    margin-bottom: 0;
 }
 
 .item:nth-child(n+2){
@@ -78,4 +79,57 @@ li > div{
 
 ol{
     margin-bottom: 20px;
+}
+
+.dropbtn {
+    background-color: white;
+    color: black;
+    width: 60px;
+    margin-right: 0;
+    padding: 0;
+    margin-top: 0;
+
+}
+  
+.dropdown {
+    position: absolute;
+    display: inline-block;
+    right: 10%;
+    padding: 0;
+    width: 200px;
+    margin-top: -18px;
+}
+  
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    width: 200px;
+    z-index: 1;
+    right: 0;
+    padding: 0;
+    margin-top: 0;
+    border: lightgrey solid 1px;
+}
+  
+.dropdown-content div {
+    padding: 10px 0px;
+    display: block;
+    margin-right: 0;
+    width: 100%;
+    margin-top: 0;
+}
+  
+.dropdown-content div:hover {
+    background-color: black;
+    color: white;
+}
+  
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+  
+.dropdown:hover .dropbtn {
+    background-color: black;
+    color: white;
 }

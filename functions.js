@@ -50,8 +50,11 @@ function createContent(open){
     const content = document.createElement("div");
     content.setAttribute("id", "content");
     const temp = list.filter(x => x.parent == open);
-    temp.forEach(function(item){
+    temp.forEach(function(item, i){
+        const up = (i > 0) ? true : false;
+        const down = (i < temp.length - 1) ? true : false;
         content.appendChild(createItem(item));
+        content.appendChild(createDropdown(item, up, down));
     });
     return content;
 }
@@ -111,6 +114,33 @@ function createListItem(item){
     return li;
 }
 
+function createDropdown(item, up, down){
+    const drop = document.createElement("div");
+    drop.setAttribute("class", "dropdown");
+    drop.appendChild(createDropdownButton());
+    drop.appendChild(createDropdownList(item, up, down));
+    return drop;
+}
+
+function createDropdownButton(){
+    const dropButton = document.createElement("div");
+    dropButton.setAttribute("class", "dropbtn");
+    dropButton.appendChild(document.createTextNode("•••"));
+    return dropButton;
+}
+
+function createDropdownList(item, up, down){
+    const dropList = document.createElement("div");
+    dropList.setAttribute("class", "dropdown-content");
+    if(up){
+        dropList.appendChild(createDivButton("Move Up", () => move(item.id, -1), ""));
+    }
+    if(down){
+        dropList.appendChild(createDivButton("Move Down", () => move(item.id, 1), ""));
+    }
+    return dropList;
+}
+
 //
 function storageAvailable(type) {
     try {
@@ -134,7 +164,7 @@ function itemNumber(i){
 }
 
 function addItems(temp){
-    const addSpace = list.findIndex(x => x.parent > temp.parent);
+    const addSpace = list.findIndex(x => x.parent > temp[0].parent);
     if(addSpace == -1){
         temp.forEach(function(item){
             list.push(item);
@@ -164,4 +194,11 @@ function otherPage(open){
         renderExample(main, open);
     }
     example = !example;
+}
+
+function move(id, pos){
+    const origin = list.findIndex(x => x.id == id);
+    const item = list.splice(origin, 1);
+    list.splice(origin + pos, 0, item[0]);
+    renderEditor(main, item[0].parent);
 }

@@ -30,7 +30,7 @@ function renderEditor(root, open){
     }
     root.appendChild(createTextarea("text"));
     root.appendChild(document.createElement("br"));
-    root.appendChild(createButton("add", () => addContent(open)));
+    root.appendChild(createButton("Add", () => addContent(open)));
     root.appendChild(createContent(open));
 }
 

@@ -113,7 +113,7 @@ ol{
 }
   
 .dropdown-content div {
-    padding: 10px 0px;
+    padding: 5px 0px;
     display: block;
     margin-right: 0;
     width: 100%;
@@ -132,4 +132,41 @@ ol{
 .dropdown:hover .dropbtn {
     background-color: black;
     color: white;
+}
+
+#dark{
+    display: table;
+    position: absolute;
+    margin: 0;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+#mid{
+    display: table-cell;
+    vertical-align: middle;
+}
+
+#info{
+    margin-left: auto;
+    margin-right: auto;
+    width: 500px;
+    background-color: white;
+    border: black solid 1px;
+}
+
+#info div{
+    width: 100%;
+}
+
+#info div textarea{
+    width: 95%;
+}
+
+#info button{
+    margin: 5px 50px;
 }

@@ -8,7 +8,7 @@ const main = document.querySelector("main");
 const saveSystem = storageAvailable('localStorage');
 
 //
-header.appendChild(createButton("Example/Editer",() => otherPage(0)));
+header.appendChild(createButton("Preview/Editer", () => otherPage(0)));
 renderEditor(main, 0);
 
 //
@@ -133,12 +133,45 @@ function createDropdownList(item, up, down){
     const dropList = document.createElement("div");
     dropList.setAttribute("class", "dropdown-content");
     if(up){
-        dropList.appendChild(createDivButton("Move Up", () => move(item.id, -1), ""));
+        dropList.appendChild(createDivButton("Move up", () => move(item.id, -1), ""));
     }
     if(down){
-        dropList.appendChild(createDivButton("Move Down", () => move(item.id, 1), ""));
+        dropList.appendChild(createDivButton("Move down", () => move(item.id, 1), ""));
     }
+    dropList.appendChild(createDivButton("Edit text", () => editInfo(item), ""));
     return dropList;
+}
+
+function editInfo(item){
+    const info = document.createElement("div");
+    info.appendChild(document.createTextNode("Here you can edit the text"));
+    info.appendChild(document.createElement("br"));
+    info.appendChild(createTextarea("infoText"));
+    document.body.appendChild(createInfo(info, () => edit(item.id)));
+    document.getElementById("infoText").value = item.text;
+}
+
+function createInfo(content, onClicked){
+    const info = document.createElement("div");
+    info.setAttribute("id", "dark");
+    info.appendChild(createInfo2(content, () => onClicked));
+    return info;
+}
+
+function createInfo2(content, onClicked){
+    const info = document.createElement("div");
+    info.setAttribute("id", "mid");
+    info.appendChild(createInfo3(content, () => onClicked));
+    return info;
+}
+
+function createInfo3(content, onClicked){
+    const info = document.createElement("div");
+    info.setAttribute("id", "info");
+    info.appendChild(content);
+    info.appendChild(createButton("Cancel", () => cancel()));
+    info.appendChild(createButton("Ok", () => onClicked));
+    return info;
 }
 
 //
@@ -201,4 +234,12 @@ function move(id, pos){
     const item = list.splice(origin, 1);
     list.splice(origin + pos, 0, item[0]);
     renderEditor(main, item[0].parent);
+}
+
+function cancel(){
+    document.getElementById("dark").remove();
+}
+
+function edit(id){
+    console.log(id);
 }

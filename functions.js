@@ -154,14 +154,14 @@ function editInfo(item){
 function createInfo(content, onClicked){
     const info = document.createElement("div");
     info.setAttribute("id", "dark");
-    info.appendChild(createInfo2(content, () => onClicked));
+    info.appendChild(createInfo2(content, onClicked));
     return info;
 }
 
 function createInfo2(content, onClicked){
     const info = document.createElement("div");
     info.setAttribute("id", "mid");
-    info.appendChild(createInfo3(content, () => onClicked));
+    info.appendChild(createInfo3(content, onClicked));
     return info;
 }
 
@@ -170,7 +170,7 @@ function createInfo3(content, onClicked){
     info.setAttribute("id", "info");
     info.appendChild(content);
     info.appendChild(createButton("Cancel", () => cancel()));
-    info.appendChild(createButton("Ok", () => onClicked));
+    info.appendChild(createButton("Ok", onClicked));
     return info;
 }
 
@@ -241,5 +241,13 @@ function cancel(){
 }
 
 function edit(id){
-    console.log(id);
+    const item = list.find(x => x.id == id);
+    const text = document.getElementById("infoText").value;
+    if(item.text == text){
+        alert("please change the text\n\nYou can also cancel the process");
+    } else {
+        item.text = text;
+        document.getElementById("dark").remove();
+        renderEditor(main, item.parent);
+    }
 }

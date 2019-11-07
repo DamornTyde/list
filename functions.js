@@ -214,7 +214,6 @@ function addContent(open){
     if(text.length > 0){
         addItems([{id:itemNumber(1), parent:open, text:text}]);
         renderEditor(main, open);
-        document.getElementById("text").value = "";
     } else {
         alert("Please write something to add in the item");
     }

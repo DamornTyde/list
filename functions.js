@@ -139,6 +139,7 @@ function createDropdownList(item, up, down){
         dropList.appendChild(createDivButton("Move down", () => move(item.id, 1), ""));
     }
     dropList.appendChild(createDivButton("Edit text", () => editInfo(item), ""));
+    dropList.appendChild(createDivButton("Delete item", () => deleteItem(item), ""));
     return dropList;
 }
 
@@ -247,6 +248,25 @@ function edit(id){
     } else {
         item.text = text;
         document.getElementById("dark").remove();
+        renderEditor(main, item.parent);
+    }
+}
+
+function deleteItem(item){
+    const sure = confirm("Are you sure that you want to delete this item and all it's children?\n\nWARNING: this can't be undone!!!");
+    if(sure){
+        var temp = [item.id];
+        list.splice(list.findIndex(x => x.id == item.id), 1);
+        while(temp.length > 0){
+            const temp2 = list.filter(x => x.parent == temp[0]);
+            if(temp2.length > 0){
+                temp2.forEach(function(i){
+                    temp.push(i.id);
+                });
+                list.splice(list.findIndex(x => x.parent == temp[0]), temp2.length);
+            }
+            temp.shift();
+        }
         renderEditor(main, item.parent);
     }
 }

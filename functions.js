@@ -244,7 +244,7 @@ function edit(id){
     const item = list.find(x => x.id == id);
     const text = document.getElementById("infoText").value;
     if(item.text == text){
-        alert("please change the text\n\nNote: You can also cancel the process");
+        alert("Please change the text\n\nNOTE: You can also cancel the process");
     } else {
         item.text = text;
         document.getElementById("dark").remove();

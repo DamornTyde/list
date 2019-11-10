@@ -322,6 +322,6 @@ function transfer(id){
     const item = list.splice(list.findIndex(x => x.id == id), 1);
     renderEditor(main, item.parent);
     item[0].parent = Number(document.getElementById("infoSelect").value);
-    addItems(id);
+    addItems(item);
     document.getElementById("dark").remove();
 }

@@ -140,6 +140,7 @@ function createDropdownList(item, up, down){
     }
     dropList.appendChild(createDivButton("Edit text", () => editInfo(item), ""));
     dropList.appendChild(createDivButton("Delete item", () => deleteItem(item), ""));
+    dropList.appendChild(createDivButton("Transfer item", () => transferInfo(item), ""));
     return dropList;
 }
 
@@ -173,6 +174,52 @@ function createInfo3(content, onClicked){
     info.appendChild(createButton("Cancel", () => cancel()));
     info.appendChild(createButton("Ok", onClicked));
     return info;
+}
+
+function transferInfo(item){
+    const select = document.createElement("select");
+    select.setAttribute("id", "infoSelect")
+    select.appendChild(getSelectContent(0, item, 1, false));
+    if(select.childElementCount == 0){
+        alert("There is no safe place to transfer this item to at the moment");
+    } else {
+        const info = document.createElement("div");
+        info.appendChild(document.createTextNode("Where do you want to transfer this item to?"));
+        info.appendChild(document.createElement("br"));
+        info.appendChild(select);
+        document.body.appendChild(createInfo(info, () => transfer(item.id)));
+    }
+}
+
+function getSelectContent(parent, item, r, copy){
+    const temp = list.filter(x => x.parent == parent);
+    const select = document.createDocumentFragment();
+    if(temp.length > 0){
+        if(parent == 0 && (temp.findIndex(x => x.id == item.id) == -1 || copy)){
+            select.appendChild(createOption("Root", parent))
+        }
+        temp.forEach(function(i, index){
+            if(i.id != item.id){
+                if(i.id != item.parent || copy){
+                    var text = "";
+                    for(x = 0; x < r; x++){
+                        text += "-";
+                    }
+                    text += " " + eval("index + 1") + ". " + i.text;
+                    select.appendChild(createOption(text, i.item));
+                }
+                select.appendChild(getSelectContent(i.id, item, r + 1, copy));
+            }
+        });
+    }
+    return select;
+}
+
+function createOption(text, value){
+    const option = document.createElement("option");
+    option.setAttribute("value", value);
+    option.appendChild(document.createTextNode(text));
+    return option;
 }
 
 //
@@ -269,4 +316,12 @@ function deleteItem(item){
         }
         renderEditor(main, item.parent);
     }
+}
+
+function transfer(id){
+    const item = list.splice(list.findIndex(x => x.id == id), 1);
+    renderEditor(main, item.parent);
+    item[0].parent = Number(document.getElementById("infoSelect").value);
+    addItems(id);
+    document.getElementById("dark").remove();
 }

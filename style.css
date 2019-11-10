@@ -154,7 +154,7 @@ ol{
 #info{
     margin-left: auto;
     margin-right: auto;
-    width: 500px;
+    width: 1000px;
     background-color: white;
     border: black solid 1px;
 }
@@ -163,7 +163,8 @@ ol{
     width: 100%;
 }
 
-#info div textarea{
+#info div textarea,
+#info div select{
     width: 95%;
 }
 

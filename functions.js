@@ -141,6 +141,7 @@ function createDropdownList(item, up, down){
     dropList.appendChild(createDivButton("Edit text", () => editInfo(item), ""));
     dropList.appendChild(createDivButton("Delete item", () => deleteItem(item), ""));
     dropList.appendChild(createDivButton("Transfer item", () => transferInfo(item), ""));
+    dropList.appendChild(createDivButton("Delete item", () => copyInfo(item), ""));
     return dropList;
 }
 
@@ -155,30 +156,22 @@ function editInfo(item){
 
 function createInfo(content, onClicked){
     const info = document.createElement("div");
-    info.setAttribute("id", "dark");
-    info.appendChild(createInfo2(content, onClicked));
-    return info;
-}
-
-function createInfo2(content, onClicked){
-    const info = document.createElement("div");
-    info.setAttribute("id", "mid");
-    info.appendChild(createInfo3(content, onClicked));
-    return info;
-}
-
-function createInfo3(content, onClicked){
-    const info = document.createElement("div");
     info.setAttribute("id", "info");
     info.appendChild(content);
     info.appendChild(createButton("Cancel", () => cancel()));
     info.appendChild(createButton("Ok", onClicked));
-    return info;
+    const mid = document.createElement("div");
+    mid.setAttribute("id", "mid");
+    mid.appendChild(info);
+    const dark = document.createElement("div");
+    dark.setAttribute("id", "dark");
+    dark.appendChild(mid);
+    return dark;
 }
 
 function transferInfo(item){
     const select = document.createElement("select");
-    select.setAttribute("id", "infoSelect")
+    select.setAttribute("id", "infoSelect");
     select.appendChild(getSelectContent(0, item, 1, false));
     if(select.childElementCount == 0){
         alert("There is no safe place to transfer this item to at the moment");
@@ -194,32 +187,41 @@ function transferInfo(item){
 function getSelectContent(parent, item, r, copy){
     const temp = list.filter(x => x.parent == parent);
     const select = document.createDocumentFragment();
-    if(temp.length > 0){
-        if(parent == 0 && (temp.findIndex(x => x.id == item.id) == -1 || copy)){
-            select.appendChild(new Option("Root", parent));
-        }
-        temp.forEach(function(i, index){
-            if(i.id != item.id){
-                if(i.id != item.parent || copy){
-                    var text = "";
-                    for(x = 0; x < r; x++){
-                        text += "-";
-                    }
-                    text += " " + eval("index + 1") + ". " + i.text;
-                    select.appendChild(new Option(text, i.id));
-                }
-                select.appendChild(getSelectContent(i.id, item, r + 1, copy));
-            }
-        });
+    if(parent == 0 && (temp.findIndex(x => x.id == item.id) == -1 || copy)){
+        select.appendChild(new Option("Root", parent));
     }
+    temp.forEach(function(i, index){
+        if(i.id != item.id){
+            if(i.id != item.parent || copy){
+                var text = "";
+                for(x = 0; x < r; x++){
+                    text += "-";
+                }
+                text += " " + eval("index + 1") + ". " + i.text;
+                select.appendChild(new Option(text, i.id));
+            }
+            select.appendChild(getSelectContent(i.id, item, r + 1, copy));
+        }
+    });
     return select;
+}
+
+function copyInfo(item){
+    const select = document.createElement("select");
+    select.setAttribute("id", "infoSelect");
+    select.appendChild(getSelectContent(0, item, 1, true));
+    const info = document.createElement("div");
+    info.appendChild(Document.createTextNode("Where do you want to copy this item to?"));
+    info.appendChild(document.createElement("br"));
+    info.appendChild(select);
+    document.body.appendChild(createInfo(info, () => copy(item.id)));
 }
 
 //
 function storageAvailable(type) {
     try {
         var storage = window[type],
-        x = '__storage_test__';
+            x = '__storage_test__';
         storage.setItem(x, x);
         storage.removeItem(x);
         return true;
@@ -317,4 +319,28 @@ function transfer(id){
     item[0].parent = Number(document.getElementById("infoSelect").value);
     addItems(item);
     document.getElementById("dark").remove();
+}
+
+function copy(id){
+    const temp = list.find(x => x.id == id);
+    const parent = Number(document.getElementById("infoSelect").value);
+    var newId = itemNumber(1),
+        temp2 = ([{oldId:id, newId:newId}]);
+    addItems([{id:newId, parent:parent, text:temp.text}]);
+    if(temp.parent == parent){
+        renderEditor(main, parent);
+    }
+    while(temp2.length > 0){
+        const temp3 = list.filter(x => x.parent == temp2[0].oldId);
+        if(temp3.length > 0){
+            var temp4 = [];
+            temp3.forEach(function(item){
+                newId = itemNumber(newId + 1);
+                temp4.push({id:newId, parent:temp2[0].newId, text:item.text});
+                temp2.push({oldId:item.id, newId:newId});
+            });
+            addItems(temp4);
+        }
+        temp2.shift();
+    }
 }

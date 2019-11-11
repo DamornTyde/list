@@ -196,7 +196,7 @@ function getSelectContent(parent, item, r, copy){
     const select = document.createDocumentFragment();
     if(temp.length > 0){
         if(parent == 0 && (temp.findIndex(x => x.id == item.id) == -1 || copy)){
-            select.appendChild(createOption("Root", parent))
+            select.appendChild(new Option("Root", parent));
         }
         temp.forEach(function(i, index){
             if(i.id != item.id){
@@ -206,20 +206,13 @@ function getSelectContent(parent, item, r, copy){
                         text += "-";
                     }
                     text += " " + eval("index + 1") + ". " + i.text;
-                    select.appendChild(createOption(text, i.item));
+                    select.appendChild(new Option(text, i.id));
                 }
                 select.appendChild(getSelectContent(i.id, item, r + 1, copy));
             }
         });
     }
     return select;
-}
-
-function createOption(text, value){
-    const option = document.createElement("option");
-    option.setAttribute("value", value);
-    option.appendChild(document.createTextNode(text));
-    return option;
 }
 
 //
@@ -320,7 +313,7 @@ function deleteItem(item){
 
 function transfer(id){
     const item = list.splice(list.findIndex(x => x.id == id), 1);
-    renderEditor(main, item.parent);
+    renderEditor(main, item[0].parent);
     item[0].parent = Number(document.getElementById("infoSelect").value);
     addItems(item);
     document.getElementById("dark").remove();

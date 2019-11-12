@@ -31,6 +31,9 @@ function renderEditor(root, open){
     root.appendChild(createTextarea("text"));
     root.appendChild(document.createElement("br"));
     root.appendChild(createButton("Add", () => addContent(open)));
+    if(open > 0){
+        root.appendChild(createButton("preview item", () => otherPage(open)));
+    }
     root.appendChild(createContent(open));
 }
 

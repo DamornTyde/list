@@ -32,7 +32,7 @@ function renderEditor(root, open){
     root.appendChild(document.createElement("br"));
     root.appendChild(createButton("Add", () => addContent(open)));
     if(open > 0){
-        root.appendChild(createButton("preview item", () => otherPage(open)));
+        root.appendChild(createButton("Preview item", () => otherPage(open)));
     }
     root.appendChild(createContent(open));
 }
@@ -87,6 +87,9 @@ function createUndertitle(parent){
 function renderExample(root, open){
     root.innerHTML = "";
     root.appendChild(getList(open));
+    if(open > 0){
+        root.appendChild(createButton("Back to item", () => otherPage(open)));
+    }
 }
 
 function getList(open){

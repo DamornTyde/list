@@ -141,7 +141,7 @@ function createDropdownList(item, up, down){
     dropList.appendChild(createDivButton("Edit text", () => editInfo(item), ""));
     dropList.appendChild(createDivButton("Delete item", () => deleteItem(item), ""));
     dropList.appendChild(createDivButton("Transfer item", () => transferInfo(item), ""));
-    dropList.appendChild(createDivButton("Delete item", () => copyInfo(item), ""));
+    dropList.appendChild(createDivButton("Copy item", () => copyInfo(item), ""));
     return dropList;
 }
 
@@ -211,7 +211,7 @@ function copyInfo(item){
     select.setAttribute("id", "infoSelect");
     select.appendChild(getSelectContent(0, item, 1, true));
     const info = document.createElement("div");
-    info.appendChild(Document.createTextNode("Where do you want to copy this item to?"));
+    info.appendChild(document.createTextNode("Where do you want to copy this item to?"));
     info.appendChild(document.createElement("br"));
     info.appendChild(select);
     document.body.appendChild(createInfo(info, () => copy(item.id)));
@@ -343,4 +343,5 @@ function copy(id){
         }
         temp2.shift();
     }
+    document.getElementById("dark").remove();
 }

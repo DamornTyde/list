@@ -86,10 +86,10 @@ function createUndertitle(parent){
 
 function renderExample(root, open){
     root.innerHTML = "";
-    root.appendChild(getList(open));
     if(open > 0){
         root.appendChild(createButton("Back to item", () => otherPage(open)));
     }
+    root.appendChild(getList(open));
 }
 
 function getList(open){

@@ -451,7 +451,7 @@ function transfer(id) {
 function copy(id) {
     const temp = list.find(x => x.id == id);
     const parent = Number(document.getElementById("infoSelect").value);
-    copyMachine(list, parent, temp);
+    copyMachine(list, parent, temp, temp.parent);
 }
 
 function setCookie(cname, cvalue, exdays) {

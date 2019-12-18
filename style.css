@@ -171,3 +171,13 @@ ol{
 #info button{
     margin: 5px 200px;
 }
+
+#cookie{
+    z-index: 1;
+    bottom: 0px;
+    width: 100%;
+    border-top: black solid 2px;
+    position: fixed;
+    background: white;
+    padding-bottom: 10px;
+}

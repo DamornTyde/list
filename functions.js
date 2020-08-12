@@ -53,7 +53,7 @@ function renderEditor(root, open) {
     if (open > 0) {
         root.appendChild(createUndertitle(temp.parent));
     }
-    root.appendChild(createButton("Add", () => addInfo(open)));
+    root.appendChild(createButton("Add", () => infoTextatea("What is the text you want in you new item?", () => addContent(open))));
     if (saveSystem) {
         root.appendChild(createButton("Inport save", () => createInfoNode("inport", () => inportList(open))));
     }
@@ -189,12 +189,16 @@ function createDropdownList(item, up, down) {
 }
 
 function editInfo(item) {
+    infoTextatea("Here you can edit the text", () => edit(item.id));
+    document.getElementById("infoText").value = item.text;
+}
+
+function infoTextatea(text, onClicked) {
     const info = document.createElement("div");
-    info.appendChild(document.createTextNode("Here you can edit the text"));
+    info.appendChild(document.createTextNode(text));
     info.appendChild(document.createElement("br"));
     info.appendChild(createTextarea("infoText"));
-    document.body.appendChild(createInfo(info, () => edit(item.id)));
-    document.getElementById("infoText").value = item.text;
+    document.body.appendChild(createInfo(info, onClicked));
 }
 
 function createInfo(content, onClicked) {
@@ -259,14 +263,6 @@ function copyInfo(item) {
     info.appendChild(document.createElement("br"));
     info.appendChild(select);
     document.body.appendChild(createInfo(info, () => copy(item.id)));
-}
-
-function addInfo(open) {
-    const info = document.createElement("div");
-    info.appendChild(document.createTextNode("What is the text you want in you new item?"));
-    info.appendChild(document.createElement("br"));
-    info.appendChild(createTextarea("infoText"));
-    document.body.appendChild(createInfo(info, () => addContent(open)));
 }
 
 function createCookieBanner() {

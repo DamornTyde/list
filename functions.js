@@ -1,12 +1,7 @@
 'use strict';
-var list = [{
-        id: 0,
-        parent: -1,
-        text: "New List",
-        type: "1"
-    }],
-    example = false,
-    cookie = false;
+var list = [new listItem(0, -1, "New List", "1")];
+var example = false;
+var cookie = false;
 
 //
 const header = document.querySelector("header");
@@ -19,12 +14,25 @@ const cookieText = ["On this project we (mostly) use cookies if you chose to sav
 const noSave = "There are no saves on this webbrowser.";
 
 //
+function listItem(id, parent, text, type) {
+    this.id = id;
+    this.parent = parent;
+    this.text = text;
+    this.type = type;
+}
+
+function connextion(oldId, newId) {
+    this.oldId = oldId;
+    this.newId = newId;
+}
+
+//
 header.appendChild(createButton("Preview/Editer", () => otherPage(0)));
 if (saveSystem) {
     cookie = checkCookie();
-    header.appendChild(createButton("save", () => saveInfo()));
-    header.appendChild(createButton("Load save", () => loadInfo()));
-    header.appendChild(createButton("Remove save", () => removeInfo()));
+    header.appendChild(createButton("Save", () => saveInfo()));
+    header.appendChild(createButton("Load save", () => createInfoNode("load", () => loadList())));
+    header.appendChild(createButton("Remove save", () => createInfoNode("remove", () => removeList())));
     header.appendChild(createButton("Clear saves", () => clearSaves()));
 }
 header.appendChild(createButton("New list", () => newList()));
@@ -45,11 +53,9 @@ function renderEditor(root, open) {
     if (open > 0) {
         root.appendChild(createUndertitle(temp.parent));
     }
-    root.appendChild(createTextarea("text"));
-    root.appendChild(document.createElement("br"));
-    root.appendChild(createButton("Add", () => addContent(open)));
+    root.appendChild(createButton("Add", () => addInfo(open)));
     if (saveSystem) {
-        root.appendChild(createButton("Inport save", () => inportInfo(open)));
+        root.appendChild(createButton("Inport save", () => createInfoNode("inport", () => inportList(open))));
     }
     if (open > 0) {
         root.appendChild(createButton("Preview item", () => otherPage(open)));
@@ -195,7 +201,7 @@ function createInfo(content, onClicked) {
     const info = document.createElement("div");
     info.setAttribute("id", "info");
     info.appendChild(content);
-    info.appendChild(createButton("Cancel", () => cancel()));
+    info.appendChild(createButton("Cancel", () => document.getElementById("dark").remove()));
     info.appendChild(createButton("Ok", onClicked));
     const mid = document.createElement("div");
     mid.setAttribute("id", "mid");
@@ -255,6 +261,14 @@ function copyInfo(item) {
     document.body.appendChild(createInfo(info, () => copy(item.id)));
 }
 
+function addInfo(open) {
+    const info = document.createElement("div");
+    info.appendChild(document.createTextNode("What is the text you want in you new item?"));
+    info.appendChild(document.createElement("br"));
+    info.appendChild(createTextarea("infoText"));
+    document.body.appendChild(createInfo(info, () => addContent(open)));
+}
+
 function createCookieBanner() {
     const title = document.createElement("h3");
     title.appendChild(document.createTextNode("Come to our website, we have cookies."));
@@ -312,18 +326,6 @@ function createSaveList() {
     return option;
 }
 
-function loadInfo() {
-    createInfoNode("load", () => loadList());
-}
-
-function removeInfo() {
-    createInfoNode("remove", () => removeList());
-}
-
-function inportInfo(open) {
-    createInfoNode("inport", () => inportList(open));
-}
-
 function createInfoNode(message, onClicked) {
     if (localStorage.length == 0) {
         alert(noSave);
@@ -375,15 +377,11 @@ function addItems(temp) {
 }
 
 function addContent(open) {
-    const text = document.getElementById("text").value;
+    const text = document.getElementById("infoText").value;
     if (text.length > 0) {
-        addItems([{
-            id: itemNumber(1),
-            parent: open,
-            text: text,
-            type: "1"
-        }]);
+        addItems([new listItem(itemNumber(1), open, text, "1")]);
         renderEditor(main, open);
+        document.getElementById("dark").remove();
     } else {
         alert("Please write something to add in the item");
     }
@@ -405,10 +403,6 @@ function move(id, pos) {
     renderEditor(main, item[0].parent);
 }
 
-function cancel() {
-    document.getElementById("dark").remove();
-}
-
 function edit(id) {
     const item = list.find(x => x.id == id);
     const text = document.getElementById("infoText").value;
@@ -422,8 +416,7 @@ function edit(id) {
 }
 
 function deleteItem(item) {
-    const sure = confirm("Are you sure that you want to delete this item and all it's children?\n\nWARNING: this can't be undone!!!");
-    if (sure) {
+    if (confirm("Are you sure that you want to delete this item and all it's children?\n\nWARNING: this can't be undone!!!")) {
         var temp = [item.id];
         list.splice(list.findIndex(x => x.id == item.id), 1);
         while (temp.length > 0) {
@@ -458,7 +451,7 @@ function setCookie(cname, cvalue, exdays) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
     const expires = `expires=${d.toUTCString()}`;
-    document.cookie = `${cname}=${cvalue};${expires};path=/`;
+    document.cookie = `${cname}=${cvalue};${expires};SameSite=Strict`;
 }
 
 function getCookie(cname) {
@@ -565,12 +558,7 @@ function newList() {
         alert("You are already working on an empty list");
     } else {
         if (confirm("Do you realy want to create a new list\n\nWARNING: all unsaved progress will be lost!")) {
-            list = [{
-                id: 0,
-                parent: -1,
-                text: "New List",
-                type: "1"
-            }];
+            list = [new listItem(0, -1, "New List", "1")];
             renderEditor(main, 0);
         }
     }
@@ -582,17 +570,9 @@ function inportList(open) {
 }
 
 function copyMachine(temp, parent, root, open) {
-    var newId = itemNumber(1),
-        temp2 = ([{
-            oldId: root.id,
-            newId: newId
-        }]);
-    addItems([{
-        id: newId,
-        parent: parent,
-        text: root.text,
-        type: root.type
-    }]);
+    var newId = itemNumber(1);
+    var temp2 = [new connextion(root.id, newId)];
+    addItems([new listItem(newId, parent, root.text, root.type)]);
     if (parent == open) {
         renderEditor(main, parent);
     }
@@ -602,16 +582,8 @@ function copyMachine(temp, parent, root, open) {
             var temp4 = [];
             temp3.forEach(function (item) {
                 newId = itemNumber(newId + 1);
-                temp4.push({
-                    id: newId,
-                    parent: temp2[0].newId,
-                    text: item.text,
-                    type: item.type
-                });
-                temp2.push({
-                    oldId: item.id,
-                    newId: newId
-                });
+                temp4.push(new listItem(newId, temp2[0].newId, item.text, item.type));
+                temp2.push(new connextion(item.id, newId));
             });
             addItems(temp4);
         }

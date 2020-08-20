@@ -51,7 +51,10 @@ function renderEditor(root, open) {
     root.innerHTML = "";
     root.appendChild(createHeader(temp.text));
     if (open > 0) {
-        root.appendChild(createUndertitle(temp.parent));
+        const title = document.createElement("div");
+        title.setAttribute("id", "back");
+        title.appendChild(createButton("back", () => renderEditor(main, parent)));
+        root.appendChild(title);
     }
     root.appendChild(createButton("Add", () => infoTextatea("What is the text you want in you new item?", () => addContent(open))));
     if (saveSystem) {
@@ -60,40 +63,50 @@ function renderEditor(root, open) {
     if (open > 0) {
         root.appendChild(createButton("Preview item", () => otherPage(open)));
     }
-    root.appendChild(createTypeOptoins(temp));
-    root.appendChild(createContent(open));
+    const option = document.createElement("select");
+    option.setAttribute("id", "type");
+    option.addEventListener("change", () => setType(open));
+    listTypes.forEach(function (item) {
+        const select = item == temp.type;
+        option.appendChild(new Option(item, undefined, select, select));
+    });
+    root.appendChild(option);
+    const content = document.createElement("div");
+    content.setAttribute("id", "content");
+    const temp2 = list.filter(x => x.parent == open);
+    temp2.forEach(function (item2, i) {;
+        const itemText = document.createElement("div");
+        itemText.setAttribute("class", "item");
+        itemText.appendChild(createDivButton(item2.text, () => renderEditor(main, item2.id), "context"));
+        content.appendChild(itemText);
+        const drop = document.createElement("div");
+        drop.setAttribute("class", "dropdown");
+        const dropButton = document.createElement("div");
+        dropButton.setAttribute("class", "dropbtn");
+        dropButton.appendChild(document.createTextNode("•••"));
+        drop.appendChild(dropButton);
+        const dropList = document.createElement("div");
+        dropList.setAttribute("class", "dropdown-content");
+        if (i > 0) {
+            dropList.appendChild(createDivButton("Move up", () => move(item.id, -1), ""));
+        }
+        if (i < temp2.length - 1) {
+            dropList.appendChild(createDivButton("Move down", () => move(item.id, 1), ""));
+        }
+        dropList.appendChild(createDivButton("Edit text", () => editInfo(item), ""));
+        dropList.appendChild(createDivButton("Delete item", () => deleteItem(item), ""));
+        dropList.appendChild(createDivButton("Transfer item", () => transferInfo(item), ""));
+        dropList.appendChild(createDivButton("Copy item", () => copyInfo(item), ""));
+        drop.appendChild(dropList);
+        content.appendChild(drop);
+    });
+    root.appendChild(content);
 }
 
 function createHeader(text) {
     const head = document.createElement("h1");
     head.appendChild(document.createTextNode(text));
     return head;
-}
-
-function createTextarea(context) {
-    const textarea = document.createElement("textarea");
-    textarea.setAttribute("id", context);
-    return textarea;
-}
-
-function createContent(open) {
-    const content = document.createElement("div");
-    content.setAttribute("id", "content");
-    const temp = list.filter(x => x.parent == open);
-    temp.forEach(function (item, i) {
-        const up = (i > 0) ? true : false;
-        const down = (i < temp.length - 1) ? true : false;
-        content.appendChild(createItem(item));
-        content.appendChild(createDropdown(item, up, down));
-    });
-    return content;
-}
-
-function createItem(i) {
-    const item = document.createElement("div");
-    item.setAttribute("class", "item");
-    item.appendChild(createDivButton(i.text, () => renderEditor(main, i.id), "context"));
-    return item;
 }
 
 function createDivButton(text, onClicked, context) {
@@ -104,22 +117,11 @@ function createDivButton(text, onClicked, context) {
     return button;
 }
 
-function createUndertitle(parent) {
-    const title = document.createElement("div");
-    title.setAttribute("id", "back");
-    title.appendChild(createButton("back", () => renderEditor(main, parent)));
-    return title;
-}
-
 function renderExample(root, open) {
     root.innerHTML = "";
     if (open > 0) {
         root.appendChild(createButton("Back to item", () => otherPage(open)));
     }
-    root.appendChild(getList(open));
-}
-
-function getList(open) {
     const div = document.createElement("div");
     const title = list.find(x => x.id == open).text;
     div.setAttribute("id", "list");
@@ -128,7 +130,7 @@ function getList(open) {
     if (temp.length > 0) {
         div.appendChild(createList(temp));
     }
-    return div;
+    root.appendChild(div);
 }
 
 function createList(temp) {
@@ -142,50 +144,15 @@ function createList(temp) {
         ol.style.listStyleType = type;
     }
     temp.forEach(function (item) {
-        ol.appendChild(createListItem(item));
+        const li = document.createElement("li");
+        li.appendChild(createDivButton(item.text, () => otherPage(item.id), "item"));
+        const temp = list.filter(x => x.parent == item.id);
+        if (temp.length > 0) {
+            li.appendChild(createList(temp));
+        }
+        ol.appendChild(li);
     });
     return ol;
-}
-
-function createListItem(item) {
-    const li = document.createElement("li");
-    li.appendChild(createDivButton(item.text, () => otherPage(item.id), "item"));
-    const temp = list.filter(x => x.parent == item.id);
-    if (temp.length > 0) {
-        li.appendChild(createList(temp));
-    }
-    return li;
-}
-
-function createDropdown(item, up, down) {
-    const drop = document.createElement("div");
-    drop.setAttribute("class", "dropdown");
-    drop.appendChild(createDropdownButton());
-    drop.appendChild(createDropdownList(item, up, down));
-    return drop;
-}
-
-function createDropdownButton() {
-    const dropButton = document.createElement("div");
-    dropButton.setAttribute("class", "dropbtn");
-    dropButton.appendChild(document.createTextNode("•••"));
-    return dropButton;
-}
-
-function createDropdownList(item, up, down) {
-    const dropList = document.createElement("div");
-    dropList.setAttribute("class", "dropdown-content");
-    if (up) {
-        dropList.appendChild(createDivButton("Move up", () => move(item.id, -1), ""));
-    }
-    if (down) {
-        dropList.appendChild(createDivButton("Move down", () => move(item.id, 1), ""));
-    }
-    dropList.appendChild(createDivButton("Edit text", () => editInfo(item), ""));
-    dropList.appendChild(createDivButton("Delete item", () => deleteItem(item), ""));
-    dropList.appendChild(createDivButton("Transfer item", () => transferInfo(item), ""));
-    dropList.appendChild(createDivButton("Copy item", () => copyInfo(item), ""));
-    return dropList;
 }
 
 function editInfo(item) {
@@ -197,7 +164,9 @@ function infoTextatea(text, onClicked) {
     const info = document.createElement("div");
     info.appendChild(document.createTextNode(text));
     info.appendChild(document.createElement("br"));
-    info.appendChild(createTextarea("infoText"));
+    const textarea = document.createElement("textarea");
+    textarea.setAttribute("id", "infoText");
+    info.appendChild(textarea);
     document.body.appendChild(createInfo(info, onClicked));
 }
 
@@ -263,34 +232,6 @@ function copyInfo(item) {
     info.appendChild(document.createElement("br"));
     info.appendChild(select);
     document.body.appendChild(createInfo(info, () => copy(item.id)));
-}
-
-function createCookieBanner() {
-    const title = document.createElement("h3");
-    title.appendChild(document.createTextNode("Come to our website, we have cookies."));
-    const text = document.createElement("div");
-    cookieText.forEach(function (item) {
-        text.appendChild(document.createTextNode(item));
-        text.appendChild(document.createElement("br"));
-        text.appendChild(document.createElement("br"));
-    });
-    text.appendChild(createButton("accept", () => cookieAccord()));
-    const info = document.createElement("div");
-    info.setAttribute("id", "cookie");
-    info.appendChild(title);
-    info.appendChild(text);
-    document.body.appendChild(info);
-}
-
-function createTypeOptoins(i) {
-    const option = document.createElement("select");
-    option.setAttribute("id", "type");
-    option.addEventListener("change", () => setType(i.id));
-    listTypes.forEach(function (item) {
-        const select = item == i.type;
-        option.appendChild(new Option(item, undefined, select, select));
-    });
-    return option;
 }
 
 function saveInfo() {
@@ -468,7 +409,20 @@ function getCookie(cname) {
 function checkCookie() {
     const accord = getCookie("accord");
     if (accord == "") {
-        createCookieBanner();
+        const title = document.createElement("h3");
+        title.appendChild(document.createTextNode("Come to our website, we have cookies."));
+        const text = document.createElement("div");
+        cookieText.forEach(function (item) {
+            text.appendChild(document.createTextNode(item));
+            text.appendChild(document.createElement("br"));
+            text.appendChild(document.createElement("br"));
+        });
+        text.appendChild(createButton("accept", () => cookieAccord()));
+        const info = document.createElement("div");
+        info.setAttribute("id", "cookie");
+        info.appendChild(title);
+        info.appendChild(text);
+        document.body.appendChild(info);
         return false;
     }
     setCookie("accord", "accord", 365);

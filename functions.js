@@ -53,7 +53,7 @@ function renderEditor(root, open) {
     if (open > 0) {
         const title = document.createElement("div");
         title.setAttribute("id", "back");
-        title.appendChild(createButton("back", () => renderEditor(main, parent)));
+        title.appendChild(createButton("back", () => renderEditor(main, temp.parent)));
         root.appendChild(title);
     }
     root.appendChild(createButton("Add", () => infoTextatea("What is the text you want in you new item?", () => addContent(open))));

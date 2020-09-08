@@ -88,15 +88,15 @@ function renderEditor(root, open) {
         const dropList = document.createElement("div");
         dropList.setAttribute("class", "dropdown-content");
         if (i > 0) {
-            dropList.appendChild(createDivButton("Move up", () => move(item.id, -1), ""));
+            dropList.appendChild(createDivButton("Move up", () => move(item2.id, -1), ""));
         }
         if (i < temp2.length - 1) {
-            dropList.appendChild(createDivButton("Move down", () => move(item.id, 1), ""));
+            dropList.appendChild(createDivButton("Move down", () => move(item2.id, 1), ""));
         }
-        dropList.appendChild(createDivButton("Edit text", () => editInfo(item), ""));
-        dropList.appendChild(createDivButton("Delete item", () => deleteItem(item), ""));
-        dropList.appendChild(createDivButton("Transfer item", () => transferInfo(item), ""));
-        dropList.appendChild(createDivButton("Copy item", () => copyInfo(item), ""));
+        dropList.appendChild(createDivButton("Edit text", () => editInfo(item2), ""));
+        dropList.appendChild(createDivButton("Delete item", () => deleteItem(item2), ""));
+        dropList.appendChild(createDivButton("Transfer item", () => transferInfo(item2), ""));
+        dropList.appendChild(createDivButton("Copy item", () => copyInfo(item2), ""));
         drop.appendChild(dropList);
         content.appendChild(drop);
     });

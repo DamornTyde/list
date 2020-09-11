@@ -65,7 +65,7 @@ function renderEditor(open) {
     }
     const option = document.createElement("select");
     option.setAttribute("id", "type");
-    option.addEventListener("change", () => setType(open));
+    option.addEventListener("change", () => list.find(x => x.id == open).type = document.getElementById("type").value);
     listTypes.forEach(function (item) {
         const select = item == temp.type;
         option.appendChild(new Option(item, undefined, select, select));
@@ -433,11 +433,6 @@ function cookieAccord() {
     setCookie("accord", "accord", 365);
     cookie = true;
     document.getElementById("cookie").remove();
-}
-
-function setType(id) {
-    const temp = list.find(x => x.id == id);
-    temp.type = document.getElementById("type").value;
 }
 
 function saveList() {

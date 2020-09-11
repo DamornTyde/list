@@ -437,8 +437,7 @@ function cookieAccord() {
 
 function setType(id) {
     const temp = list.find(x => x.id == id);
-    const type = document.getElementById("type").value;
-    temp.type = type;
+    temp.type = document.getElementById("type").value;
 }
 
 function saveList() {

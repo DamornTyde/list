@@ -36,7 +36,7 @@ if (saveSystem) {
     header.appendChild(createButton("Clear saves", () => clearSaves()));
 }
 header.appendChild(createButton("New list", () => newList()));
-renderEditor(main, 0);
+renderEditor(0);
 
 //
 function createButton(text, onClicked) {
@@ -46,22 +46,22 @@ function createButton(text, onClicked) {
     return button;
 }
 
-function renderEditor(root, open) {
+function renderEditor(open) {
     const temp = list.find(x => x.id == open);
-    root.innerHTML = "";
-    root.appendChild(createHeader(temp.text));
+    main.innerHTML = "";
+    main.appendChild(createHeader(temp.text));
     if (open > 0) {
         const title = document.createElement("div");
         title.setAttribute("id", "back");
-        title.appendChild(createButton("back", () => renderEditor(main, temp.parent)));
-        root.appendChild(title);
+        title.appendChild(createButton("back", () => renderEditor(temp.parent)));
+        main.appendChild(title);
     }
-    root.appendChild(createButton("Add", () => infoTextatea("What is the text you want in you new item?", () => addContent(open))));
+    main.appendChild(createButton("Add", () => infoTextatea("What is the text you want in you new item?", () => addContent(open))));
     if (saveSystem) {
-        root.appendChild(createButton("Inport save", () => createInfoNode("inport", () => inportList(open))));
+        main.appendChild(createButton("Inport save", () => createInfoNode("inport", () => inportList(open))));
     }
     if (open > 0) {
-        root.appendChild(createButton("Preview item", () => otherPage(open)));
+        main.appendChild(createButton("Preview item", () => otherPage(open)));
     }
     const option = document.createElement("select");
     option.setAttribute("id", "type");
@@ -70,14 +70,14 @@ function renderEditor(root, open) {
         const select = item == temp.type;
         option.appendChild(new Option(item, undefined, select, select));
     });
-    root.appendChild(option);
+    main.appendChild(option);
     const content = document.createElement("div");
     content.setAttribute("id", "content");
     const temp2 = list.filter(x => x.parent == open);
     temp2.forEach(function (item2, i) {;
         const itemText = document.createElement("div");
         itemText.setAttribute("class", "item");
-        itemText.appendChild(createDivButton(item2.text, () => renderEditor(main, item2.id), "context"));
+        itemText.appendChild(createDivButton(item2.text, () => renderEditor(item2.id), "context"));
         content.appendChild(itemText);
         const drop = document.createElement("div");
         drop.setAttribute("class", "dropdown");
@@ -100,7 +100,7 @@ function renderEditor(root, open) {
         drop.appendChild(dropList);
         content.appendChild(drop);
     });
-    root.appendChild(content);
+    main.appendChild(content);
 }
 
 function createHeader(text) {
@@ -117,10 +117,10 @@ function createDivButton(text, onClicked, context) {
     return button;
 }
 
-function renderExample(root, open) {
-    root.innerHTML = "";
+function renderExample(open) {
+    main.innerHTML = "";
     if (open > 0) {
-        root.appendChild(createButton("Back to item", () => otherPage(open)));
+        main.appendChild(createButton("Back to item", () => otherPage(open)));
     }
     const div = document.createElement("div");
     const title = list.find(x => x.id == open).text;
@@ -130,7 +130,7 @@ function renderExample(root, open) {
     if (temp.length > 0) {
         div.appendChild(createList(temp));
     }
-    root.appendChild(div);
+    main.appendChild(div);
 }
 
 function createList(temp) {
@@ -317,7 +317,7 @@ function addContent(open) {
     const text = document.getElementById("infoText").value;
     if (text.length > 0) {
         addItems([new listItem(itemNumber(1), open, text, "1")]);
-        renderEditor(main, open);
+        renderEditor(open);
         document.getElementById("dark").remove();
     } else {
         alert("Please write something to add in the item");
@@ -326,9 +326,9 @@ function addContent(open) {
 
 function otherPage(open) {
     if (example) {
-        renderEditor(main, open);
+        renderEditor(open);
     } else {
-        renderExample(main, open);
+        renderExample(open);
     }
     example = !example;
 }
@@ -337,7 +337,7 @@ function move(id, pos) {
     const origin = list.findIndex(x => x.id == id);
     const item = list.splice(origin, 1);
     list.splice(origin + pos, 0, item[0]);
-    renderEditor(main, item[0].parent);
+    renderEditor(item[0].parent);
 }
 
 function edit(id) {
@@ -348,7 +348,7 @@ function edit(id) {
     } else {
         item.text = text;
         document.getElementById("dark").remove();
-        renderEditor(main, item.parent);
+        renderEditor(item.parent);
     }
 }
 
@@ -366,13 +366,13 @@ function deleteItem(item) {
             }
             temp.shift();
         }
-        renderEditor(main, item.parent);
+        renderEditor(item.parent);
     }
 }
 
 function transfer(id) {
     const item = list.splice(list.findIndex(x => x.id == id), 1);
-    renderEditor(main, item[0].parent);
+    renderEditor(item[0].parent);
     item[0].parent = Number(document.getElementById("infoSelect").value);
     addItems(item);
     document.getElementById("dark").remove();
@@ -490,9 +490,9 @@ function loadList() {
 function reloadAfterSave() {
     document.getElementById("dark").remove();
     if (example) {
-        renderExample(main, 0);
+        renderExample(0);
     } else {
-        renderEditor(main, 0);
+        renderEditor(0);
     }
 }
 
@@ -509,7 +509,7 @@ function newList() {
     } else {
         if (confirm("Do you realy want to create a new list\n\nWARNING: all unsaved progress will be lost!")) {
             list = [new listItem(0, -1, "New List", "1")];
-            renderEditor(main, 0);
+            renderEditor(0);
         }
     }
 }
@@ -524,7 +524,7 @@ function copyMachine(temp, parent, root, open) {
     var temp2 = [new connextion(root.id, newId)];
     addItems([new listItem(newId, parent, root.text, root.type)]);
     if (parent == open) {
-        renderEditor(main, parent);
+        renderEditor(parent);
     }
     while (temp2.length > 0) {
         const temp3 = temp.filter(x => x.parent == temp2[0].oldId);

@@ -74,7 +74,7 @@ function renderEditor(open) {
     const content = document.createElement("div");
     content.setAttribute("id", "content");
     const temp2 = list.filter(x => x.parent == open);
-    temp2.forEach(function (item2, i) {;
+    temp2.forEach(function (item2, i) {
         const itemText = document.createElement("div");
         itemText.setAttribute("class", "item");
         itemText.appendChild(createDivButton(item2.text, () => renderEditor(item2.id), "context"));

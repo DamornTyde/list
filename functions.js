@@ -256,9 +256,8 @@ function saveInfo() {
 function createSaveList() {
     const option = document.createDocumentFragment();
     for (var i = 0; i < localStorage.length; i++) {
-        const item = localStorage.key(i);
         const select = item == list[0].text;
-        option.appendChild(new Option(item, i, select, select));
+        option.appendChild(new Option(item, undefined, select, select));
     }
     return option;
 }
@@ -468,7 +467,7 @@ function clearSaves() {
 }
 
 function loadList() {
-    const name = localStorage.key(Number(document.getElementById("infoSelect").value));
+    const name = document.getElementById("infoSelect").value;
     var sure;
     if (list.length == 1) {
         sure = true;
@@ -491,7 +490,7 @@ function reloadAfterSave() {
 }
 
 function removeList() {
-    const name = localStorage.key(Number(document.getElementById("infoSelect").value));
+    const name = document.getElementById("infoSelect").value;
     if (confirm(`Do you realy want to remove '${name}'?\n\nWARNING: this can't do undone!`)) {
         localStorage.removeItem(name);
     }
@@ -509,7 +508,7 @@ function newList() {
 }
 
 function inportList(open) {
-    const temp = JSON.parse(localStorage.getItem(localStorage.key(Number(document.getElementById("infoSelect").value))));
+    const temp = JSON.parse(localStorage.getItem(document.getElementById("infoSelect").value));
     copyMachine(temp, open, temp[0], open);
 }
 

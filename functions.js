@@ -65,7 +65,7 @@ function renderEditor(open) {
     }
     const option = document.createElement("select");
     option.setAttribute("id", "type");
-    option.addEventListener("change", () => list.find(x => x.id == open).type = document.getElementById("type").value);
+    option.addEventListener("change", () => temp.type = document.getElementById("type").value);
     listTypes.forEach(function (item) {
         const select = item == temp.type;
         option.appendChild(new Option(item, undefined, select, select));

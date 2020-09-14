@@ -21,7 +21,7 @@ function listItem(id, parent, text, type) {
     this.type = type;
 }
 
-function connextion(oldId, newId) {
+function connection(oldId, newId) {
     this.oldId = oldId;
     this.newId = newId;
 }
@@ -513,7 +513,7 @@ function inportList(open) {
 
 function copyMachine(temp, parent, root, open) {
     var newId = itemNumber(1);
-    var temp2 = [new connextion(root.id, newId)];
+    var temp2 = [new connection(root.id, newId)];
     addItems([new listItem(newId, parent, root.text, root.type)]);
     if (parent == open) {
         renderEditor(parent);
@@ -525,7 +525,7 @@ function copyMachine(temp, parent, root, open) {
             temp3.forEach(function (item) {
                 newId = itemNumber(newId + 1);
                 temp4.push(new listItem(newId, temp2[0].newId, item.text, item.type));
-                temp2.push(new connextion(item.id, newId));
+                temp2.push(new connection(item.id, newId));
             });
             addItems(temp4);
         }

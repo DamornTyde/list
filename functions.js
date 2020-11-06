@@ -58,7 +58,7 @@ function renderEditor(open) {
     }
     main.appendChild(createButton("Add", () => infoTextatea("What is the text you want in you new item?", () => addContent(open))));
     if (saveSystem) {
-        main.appendChild(createButton("Inport save", () => createInfoNode("inport", () => inportList(open))));
+        main.appendChild(createButton("Import save", () => createInfoNode("inport", () => inportList(open))));
     }
     if (open > 0) {
         main.appendChild(createButton("Preview item", () => otherPage(open)));
